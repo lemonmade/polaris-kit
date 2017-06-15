@@ -1,9 +1,9 @@
 import {join} from 'path';
-import {Env, Configure} from './src';
+import {Env, Plugins} from './src';
 
-export default function createConfig(configure: Configure, env: Env) {
+export default function createConfig(configure: Plugins, env: Env) {
   return {
-    tools: [
+    plugins: [
       configure.sass({includePaths: [join(process.cwd(), 'styles')]}),
       configure.webpack((config) => ({...config, foo: 'bar'})),
     ],

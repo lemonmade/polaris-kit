@@ -1,10 +1,12 @@
 import * as path from 'path';
-import * as tools from './configure';
+
+import {Plugin, PluginMap} from './types';
+import * as plugins from './plugins';
 import Env from './env';
 
 interface Config {
   name: string,
-  tools: tools.ToolConfig[],
+  plugins: Plugin[],
 }
 
 export class Workspace {
@@ -14,8 +16,8 @@ export class Workspace {
 
   constructor(public root: string, public env: Env, private config: Config) {}
 
-  configFor<T extends keyof tools.ConfigMap>(tool: T): tools.ConfigMap[T] | undefined {
-    return this.config.tools.find(({tool: aTool}) => aTool === tool);
+  configFor<T extends keyof PluginMap>(plugin: T): PluginMap[T] | undefined {
+    return this.config.plugins.find(({plugin: aPlugin}) => aPlugin === plugin);
   }
 }
 
@@ -28,7 +30,7 @@ export default async function loadWorkspace() {
 
 async function loadConfig(root: string, env: Env): Promise<Config> {
   const userConfigurer = require(path.join(root, 'polaris.config.ts')).default;
-  const config = await userConfigurer(tools, env);
+  const config = await userConfigurer(plugins, env);
   return {
     name: path.basename(root),
     tools: [],

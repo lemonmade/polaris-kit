@@ -1,7 +1,7 @@
 import {Workspace} from '../../workspace';
 
 export function sass(workspace: Workspace) {
-  const config = workspace.configFor('Sass');
+  const config = workspace.configFor('sass');
 
   return {
     loader: 'sass-loader',

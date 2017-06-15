@@ -1,4 +1,4 @@
-import * as configure from './configure';
+import * as plugins from './plugins';
 
 export {default as Env} from './env';
-export type Configure = typeof configure;
+export type Plugins = typeof plugins;
