@@ -1,9 +1,9 @@
 import * as path from 'path';
 import {readJSON} from 'fs-extra';
 
-import {Plugin, PluginMap} from './types';
-import * as plugins from './plugins';
-import Env from './env';
+import {Plugin, PluginMap} from '../types';
+import * as plugins from '../plugins';
+import Env from '../env';
 
 interface Config {
   name: string,
