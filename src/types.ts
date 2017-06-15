@@ -12,9 +12,16 @@ export interface WebpackPlugin {
   configure(config: object): object,
 }
 
-export type Plugin = SassPlugin | TypeScriptPlugin | WebpackPlugin;
+export interface JestPlugin {
+  plugin: 'jest',
+  setupRun?: string,
+  setupTest?: string,
+}
+
+export type Plugin = JestPlugin | SassPlugin | TypeScriptPlugin | WebpackPlugin;
 
 export interface PluginMap {
+  jest: JestPlugin,
   sass: SassPlugin,
   typescript: TypeScriptPlugin,
   webpack: WebpackPlugin,

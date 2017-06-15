@@ -3,13 +3,37 @@
   "version": "0.0.1",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "yarn run test -- --watch"
+  },
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "packages/.*/lib",
+      "packages/.*/test/fixtures/.*d.ts"
+    ],
+    "testRegex": ".*\\.test\\.ts$",
+    "transform": {
+      ".ts$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ]
+  },
   "devDependencies": {
+    "@types/fs-extra": "^3.0.3",
+    "@types/jest": "^19.2.4",
+    "jest": "^20.0.4",
+    "ts-jest": "^20.0.6",
     "ts-node": "^3.0.6",
     "typescript": "^2.3.4"
   },
   "dependencies": {
     "@types/node": "^7.0.31",
     "@types/yargs": "^6.6.0",
+    "babel-preset-shopify": "^16.1.0",
+    "fs-extra": "^3.0.1",
     "yargs": "^8.0.2"
   }
 }

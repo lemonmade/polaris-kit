@@ -1,6 +1,6 @@
 
 import loadWorkspace from '../../workspace';
-import {webpack} from '../../tools';
+import {config as webpack} from '../../tools/webpack';
 
 export const command = 'show-config';
 

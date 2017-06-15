@@ -1,7 +1,7 @@
 import {join} from 'path';
-import {Env, Plugins} from './src';
+import {Plugins} from '../src';
 
-export default function createConfig(configure: Plugins, env: Env) {
+export default function createConfig(configure: Plugins) {
   return {
     plugins: [
       configure.sass({includePaths: [join(process.cwd(), 'styles')]}),
