@@ -15,9 +15,6 @@ interface Paths {
 export default class Env {
   target: Target;
   mode: Mode;
-  paths = {root: resolve(__dirname, '..')};
-  polaris = true;
-  typescript = false;
 
   constructor({target = 'client', mode = 'production'}: Options) {
     this.target = target;

@@ -1,2 +1,4 @@
+import * as configure from './configure';
+
 export {default as Env} from './env';
-export {default as Configure} from './configure';
+export type Configure = typeof configure;
