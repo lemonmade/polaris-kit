@@ -30,6 +30,8 @@ export function createWorkspace({
     ownRoot: path.resolve(__dirname, '..'),
     ownNodeModules: path.resolve(__dirname, '../node_modules'),
     root,
+    private: path.join(root, '.sewing-kit'),
+    build: path.join(root, 'build'),
     nodeModules: path.join(root, 'node_modules'),
     app: appPath,
     components: path.join(appPath, 'components'),
