@@ -3,12 +3,8 @@ let mockJest = jest.fn();
 jest.mock('jest', () => ({run: mockJest}));
 jest.mock('../config', () => ({default: mockJestConfig}));
 
-import * as path from 'path';
-
+import {createWorkspace} from 'tests/utilities';
 import runJest from '..';
-import {Workspace} from '../../../workspace';
-import Env from '../../../env';
-import {Plugin} from '../../../types';
 
 const originalBabelEnv = process.env.BABEL_ENV;
 const originalNodeEnv = process.env.BABEL_ENV;
@@ -68,22 +64,3 @@ describe('jest()', () => {
     expect(mockJest.mock.calls[0][0].includes('--runInBand')).toBe(true);
   });
 });
-
-interface Options {
-  dependencies: {[key: string]: string},
-  devDependencies: {[key: string]: string},
-  plugins: Plugin[],
-  env: Env,
-}
-
-function createWorkspace({
-  dependencies = {},
-  devDependencies = {},
-  plugins = [],
-  env = new Env({target: 'client', mode: 'development'}),
-}: Partial<Options> = {}) {
-  const root = process.cwd();
-  const packageJSON = {dependencies, devDependencies};
-  const config = {name: path.basename(root), plugins};
-  return new Workspace(root, env, packageJSON, config);
-}

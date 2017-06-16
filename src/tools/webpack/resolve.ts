@@ -3,15 +3,15 @@ import {Workspace} from '../../workspace';
 import {ifElse, removeNullValues, flatten} from '../../utilities';
 
 export default function resolve(workspace: Workspace) {
-  const {env} = workspace;
+  const {env, project} = workspace;
 
   return removeNullValues({
     extensions: flatten([
       '.js',
-      ifElse(workspace.usesReact, '.jsx'),
+      ifElse(project.usesReact, '.jsx'),
       '.json',
-      ifElse(workspace.usesTypeScript, '.ts'),
-      ifElse(workspace.usesTypeScript && workspace.usesReact, '.tsx'),
+      ifElse(project.usesTypeScript, '.ts'),
+      ifElse(project.usesTypeScript && project.usesReact, '.tsx'),
     ]),
     mainFields: ifElse(
       env.isServer,
@@ -19,7 +19,7 @@ export default function resolve(workspace: Workspace) {
       ['browser', 'jsnext:main', 'module', 'main'],
     ),
     alias: ifElse(
-      workspace.usesPolaris && env.isProduction,
+      project.usesPolaris && env.isProduction,
       {'@shopify/polaris': path.resolve(workspace.nodeModules, '@shopify/polaris/src')},
     ),
   });

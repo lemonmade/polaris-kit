@@ -1,9 +1,7 @@
 import * as path from 'path';
+import {createWorkspace} from 'tests/utilities';
 
 import jestConfig from '../config';
-import {Workspace} from '../../../workspace';
-import Env from '../../../env';
-import {Plugin} from '../../../types';
 import * as plugins from '../../../plugins';
 
 const jestPath = path.resolve(__dirname, '../../../../jest');
@@ -87,22 +85,3 @@ describe('jestConfig()', () => {
     });
   });
 });
-
-interface Options {
-  dependencies: {[key: string]: string},
-  devDependencies: {[key: string]: string},
-  plugins: Plugin[],
-  env: Env,
-}
-
-function createWorkspace({
-  dependencies = {},
-  devDependencies = {},
-  plugins = [],
-  env = new Env({target: 'client', mode: 'development'}),
-}: Partial<Options> = {}) {
-  const root = process.cwd();
-  const packageJSON = {dependencies, devDependencies};
-  const config = {name: path.basename(root), plugins};
-  return new Workspace(root, env, packageJSON, config);
-}

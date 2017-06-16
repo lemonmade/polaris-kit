@@ -10,7 +10,7 @@ export interface Argv {
 }
 
 export async function handler({component}: Argv) {
-  const workspace = await loadWorkspace();
+  const {project: {usesTypeScript}} = await loadWorkspace();
   const parts = component.split('/');
   const name = parts[parts.length - 1];
   let targetDir;
@@ -28,7 +28,7 @@ export async function handler({component}: Argv) {
   await mkdirp(targetDir);
 
   await Promise.all([
-    writeFileSyncWithCorrectIndentation(resolve(targetDir, `${name}.${workspace.usesTypeScript ? 'tsx' : 'js'}`), `
+    writeFileSyncWithCorrectIndentation(resolve(targetDir, `${name}.${usesTypeScript ? 'tsx' : 'js'}`), `
       import * as React from 'react';
       import {classNames} from '@shopify/react-utilities/styles';
       import * as styles from './${name}.scss';
@@ -46,7 +46,7 @@ export async function handler({component}: Argv) {
         );
       }
     `),
-    writeFileSyncWithCorrectIndentation(resolve(targetDir, `index.${workspace.usesTypeScript ? 'ts' : 'js'}`), `
+    writeFileSyncWithCorrectIndentation(resolve(targetDir, `index.${usesTypeScript ? 'ts' : 'js'}`), `
       import ${name} from './${name}';
 
       export * from './${name}';

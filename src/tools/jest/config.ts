@@ -7,7 +7,7 @@ export interface Config {
 }
 
 export default async function jestConfig(workspace: Workspace): Promise<Config> {
-  const {root, ownRoot, usesPolaris} = workspace;
+  const {root, ownRoot, project: {usesPolaris}} = workspace;
 
   const fileMatcher = usesPolaris
     ? '\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$'

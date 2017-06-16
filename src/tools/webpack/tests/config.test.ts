@@ -1,5 +1,4 @@
-import * as path from 'path';
-import {Workspace} from '../../../workspace';
+import {createWorkspace} from 'tests/utilities';
 import Env from '../../../env';
 import webpackConfig from '../config';
 
@@ -129,15 +128,3 @@ describe('webpack()', () => {
     });
   });
 });
-
-function createWorkspace({
-  dependencies = {},
-  devDependencies = {},
-  plugins = [],
-  env = new Env({target: 'client', mode: 'development'}),
-} = {}) {
-  const root = process.cwd();
-  const packageJSON = {dependencies, devDependencies};
-  const config = {name: path.basename(root), plugins};
-  return new Workspace(root, env, packageJSON, config);
-}
