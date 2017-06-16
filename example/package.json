@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "stylelint": {
+    "extends": [
+      "stylelint-config-shopify"
+    ]
+  },
   "dependencies": {
     "graphql": "^0.10.1",
     "graphql-tag": "^2.3.0"
