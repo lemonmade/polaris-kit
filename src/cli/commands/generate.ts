@@ -1,7 +1,7 @@
 import * as chalk from 'chalk';
 import {resolve, join} from 'path';
 import {mkdirp, exists, readFile, writeFile} from 'fs-extra';
-import loadWorkspace from '../../../workspace';
+import loadWorkspace from '../../workspace';
 
 export const command = 'generate <component>';
 

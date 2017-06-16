@@ -9,6 +9,7 @@ export interface Paths {
   app: string,
   components: string,
   sections: string,
+  build: string,
 }
 
 export default async function loadPaths(root: string, project: Project): Promise<Paths> {
@@ -23,5 +24,6 @@ export default async function loadPaths(root: string, project: Project): Promise
     app: appPath,
     components: path.join(appPath, 'components'),
     sections: path.join(appPath, 'sections'),
+    build: path.join(root, 'build'),
   };
 }

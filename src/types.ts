@@ -1,3 +1,14 @@
+export interface JestPlugin {
+  plugin: 'jest',
+  setupRun?: string,
+  setupTest?: string,
+}
+
+export interface GraphQLPlugin {
+  plugin: 'graphql',
+  endpoint: string,
+}
+
 export interface SassPlugin {
   plugin: 'sass',
   includePaths: string[],
@@ -12,15 +23,10 @@ export interface WebpackPlugin {
   configure(config: object): object,
 }
 
-export interface JestPlugin {
-  plugin: 'jest',
-  setupRun?: string,
-  setupTest?: string,
-}
-
-export type Plugin = JestPlugin | SassPlugin | TypeScriptPlugin | WebpackPlugin;
+export type Plugin = GraphQLPlugin | JestPlugin | SassPlugin | TypeScriptPlugin | WebpackPlugin;
 
 export interface PluginMap {
+  graphql: GraphQLPlugin,
   jest: JestPlugin,
   sass: SassPlugin,
   typescript: TypeScriptPlugin,

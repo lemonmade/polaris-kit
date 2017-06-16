@@ -3,7 +3,19 @@ import {
   TypeScriptPlugin,
   WebpackPlugin,
   JestPlugin,
+  GraphQLPlugin,
 } from './types';
+
+export interface GraphQLPluginConfig {
+  endpoint: GraphQLPlugin['endpoint'],
+}
+
+export function graphql({endpoint}: GraphQLPluginConfig): GraphQLPlugin {
+  return {
+    plugin: 'graphql',
+    endpoint,
+  };
+}
 
 export interface JestPluginConfig {
   setupTest?: JestPlugin['setupTest'],

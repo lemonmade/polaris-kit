@@ -2,5 +2,9 @@
   "name": "example",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "graphql": "^0.10.1",
+    "graphql-tag": "^2.3.0"
+  }
 }
