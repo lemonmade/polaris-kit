@@ -1,6 +1,7 @@
 import {Options} from 'yargs';
 
 import Env from '../../env';
+import Tasks from '../../tasks';
 import loadWorkspace from '../../workspace';
 
 import {runGraphQLLint} from '../../tools/eslint';
@@ -25,13 +26,14 @@ export interface Argv {
 }
 
 export async function handler(argv: Argv) {
+  const tasks = new Tasks();
   const workspace = await loadWorkspace(new Env({mode: 'test'}));
 
   if (argv.graphql) {
-    await runGraphQLLint(workspace);
+    await runGraphQLLint(workspace, tasks);
   }
 
   if (argv.graphqlFixtures) {
-    await runGraphQLFixtureLint(workspace);
+    await runGraphQLFixtureLint(workspace, tasks);
   }
 }

@@ -1,13 +1,21 @@
 import {execSync} from 'child_process';
 import {join} from 'path';
 
+import Tasks from '../../tasks';
 import {Workspace} from '../../workspace';
 import buildGraphQL from '../graphql';
 import {graphQLDirectoryGlobPattern, graphQLSchemaPath} from '../utilities';
 
-export default async function validateGraphQLFixtures(workspace: Workspace) {
-  if (!workspace.project.usesGraphQL) { return; }
-  await buildGraphQL(workspace);
+const TASK = Symbol('GraphQLFixtureLint');
+
+export default async function validateGraphQLFixtures(workspace: Workspace, tasks: Tasks) {
+  if (
+    !workspace.project.usesGraphQL ||
+    tasks.hasPerformed(TASK)
+  ) { return; }
+
+  tasks.perform(TASK);
+  await buildGraphQL(workspace, tasks);
 
   const {paths} = workspace;
   const executable = join(paths.ownNodeModules, '.bin/graphql-validate-fixtures');

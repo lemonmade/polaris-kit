@@ -2,11 +2,19 @@ import {mkdirp, writeFile} from 'fs-extra';
 import fetch = require('isomorphic-fetch');
 import {printSchema, buildClientSchema} from 'graphql';
 
+import Tasks from '../../tasks';
 import {Workspace} from '../../workspace';
 import {graphQLSchemaPath} from '../utilities';
 
-export default async function buildGraphQL(workspace: Workspace) {
-  if (!workspace.project.usesGraphQL) { return; }
+const TASK = Symbol('GraphQLBuild');
+
+export default async function buildGraphQL(workspace: Workspace, tasks: Tasks) {
+  if (
+    !workspace.project.usesGraphQL ||
+    tasks.hasPerformed(TASK)
+  ) { return; }
+
+  tasks.perform(TASK);
 
   const graphQLPlugin = workspace.configFor('graphql');
   if (graphQLPlugin == null) {

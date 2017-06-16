@@ -3,12 +3,20 @@ import {execSync} from 'child_process';
 import {mkdirp, writeFile} from 'fs-extra';
 
 import {Workspace} from '../../workspace';
+import Tasks from '../../tasks';
 import buildGraphQL from '../graphql';
 import {graphQLSchemaPath, graphQLDirectoryGlobPattern} from '../utilities';
 
-export default async function runGraphQLLint(workspace: Workspace) {
-  if (!workspace.project.usesGraphQL) { return; }
-  await buildGraphQL(workspace);
+const TASK = Symbol('GraphQLLint');
+
+export default async function runGraphQLLint(workspace: Workspace, tasks: Tasks) {
+  if (
+    !workspace.project.usesGraphQL ||
+    tasks.hasPerformed(TASK)
+  ) { return; }
+
+  tasks.perform(TASK);
+  await buildGraphQL(workspace, tasks);
 
   const {paths} = workspace;
   const executable = join(paths.ownNodeModules, '.bin/eslint');
