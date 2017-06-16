@@ -1,6 +1,6 @@
 import * as chalk from 'chalk';
+import {resolve, join} from 'path';
 import {mkdirp, exists, readFile, writeFile} from 'fs-extra';
-import {resolve} from 'path';
 import loadWorkspace from '../../../workspace';
 
 export const command = 'generate <component>';
@@ -10,19 +10,15 @@ export interface Argv {
 }
 
 export async function handler({component}: Argv) {
-  const {project: {usesTypeScript}} = await loadWorkspace();
+  const {project: {usesTypeScript}, paths} = await loadWorkspace();
   const parts = component.split('/');
   const name = parts[parts.length - 1];
   let targetDir;
 
-  // TODO
-  const components = 'components';
-  const sections = 'sections';
-
   if (parts.length === 1) {
-    targetDir = resolve(components, parts[0]);
+    targetDir = join(paths.components, parts[0]);
   } else {
-    targetDir = resolve(sections, ...parts.slice(0, parts.length - 1), 'components', name);
+    targetDir = join(paths.sections, ...parts.slice(0, parts.length - 1), 'components', name);
   }
 
   await mkdirp(targetDir);
