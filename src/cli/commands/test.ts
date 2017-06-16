@@ -1,10 +1,11 @@
+import {Options} from 'yargs';
 import Env from '../../env';
 import loadWorkspace from '../../workspace';
 import runJest from '../../tools/jest';
 
 export const command = 'test';
 
-export const builder = {
+export const builder: {[key: string]: Options} = {
   watch: {
     type: 'boolean',
     default: true,

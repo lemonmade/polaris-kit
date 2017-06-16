@@ -1,11 +1,11 @@
 import * as yargs from 'yargs';
 
-import * as showConfig from './commands/show-config';
 import * as test from './commands/test';
+import * as generate from './commands/generate';
 
 yargs
   .usage('Usage: $0 [command] [options]')
-  .command(showConfig)
   .command(test)
+  .command(generate)
   .help()
   .argv;
