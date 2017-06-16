@@ -1,28 +1,22 @@
-import * as path from 'path';
-
 import {PluginMap} from '../types';
 import Env from '../env';
 
 import loadConfig, {Config} from './config';
 import loadProject, {Project} from './project';
+import loadPaths, {Paths} from './paths';
 
 export {Config, Project};
 
 export class Workspace {
-  ownRoot = path.resolve(__dirname, '..', '..');
-
   get name() {
     return this.config.name;
-  }
-
-  get nodeModules() {
-    return path.join(this.root, 'node_modules');
   }
 
   constructor(
     public root: string,
     public env: Env,
     public project: Project,
+    public paths: Paths,
     private config: Config,
   ) {}
 
@@ -33,10 +27,12 @@ export class Workspace {
 
 export default async function loadWorkspace(env = new Env({target: 'client', mode: 'development'})) {
   const root = process.cwd();
+
   const [config, project] = await Promise.all([
     loadConfig(root, env),
     loadProject(root)
   ]);
-  
-  return new Workspace(root, env, project, config);
+
+  const paths = await loadPaths(root, project);
+  return new Workspace(root, env, project, paths, config);
 }

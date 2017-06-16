@@ -7,19 +7,19 @@ export interface Config {
 }
 
 export default async function jestConfig(workspace: Workspace): Promise<Config> {
-  const {root, ownRoot, project: {usesPolaris}} = workspace;
+  const {root, paths, project: {usesPolaris}} = workspace;
 
   const fileMatcher = usesPolaris
     ? '\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$'
     : '\\.(jpg|jpeg|png|gif|svg|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$';
   
-  const transformsRoot = path.join(ownRoot, 'jest', 'transformers');
+  const transformsRoot = path.join(paths.ownRoot, 'jest', 'transformers');
   const jestConfig = workspace.configFor('jest');
   
   return {
     rootDir: root,
     setupFiles: flatten([
-      path.join(ownRoot, 'jest', 'polyfills.js'),
+      path.join(paths.ownRoot, 'jest', 'polyfills.js'),
       jestConfig && jestConfig.setupRun,
     ]),
     setupTestFrameworkScriptFile: jestConfig && jestConfig.setupTest,

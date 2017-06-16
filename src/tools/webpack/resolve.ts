@@ -3,7 +3,7 @@ import {Workspace} from '../../workspace';
 import {ifElse, removeNullValues, flatten} from '../../utilities';
 
 export default function resolve(workspace: Workspace) {
-  const {env, project} = workspace;
+  const {env, project, paths} = workspace;
 
   return removeNullValues({
     extensions: flatten([
@@ -20,7 +20,7 @@ export default function resolve(workspace: Workspace) {
     ),
     alias: ifElse(
       project.usesPolaris && env.isProduction,
-      {'@shopify/polaris': path.resolve(workspace.nodeModules, '@shopify/polaris/src')},
+      {'@shopify/polaris': path.join(paths.nodeModules, '@shopify/polaris/src')},
     ),
   });
 }

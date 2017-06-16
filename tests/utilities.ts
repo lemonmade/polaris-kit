@@ -5,22 +5,37 @@ import Env from '../src/env';
 import {Plugin} from '../src/types';
 
 interface Options {
+  root: string,
+  isRails: boolean,
   dependencies: {[key: string]: string},
   devDependencies: {[key: string]: string},
+  devYaml: {[key: string]: any},
   plugins: Plugin[],
   env: Env,
 }
 
 export function createWorkspace({
+  root = process.cwd(),
+  isRails = false,
   dependencies = {},
   devDependencies = {},
+  devYaml = {},
   plugins = [],
   env = new Env({target: 'client', mode: 'development'}),
 }: Partial<Options> = {}) {
-  const root = process.cwd();
-  const project = new Project({dependencies, devDependencies})
+  const project = new Project(isRails, {dependencies, devDependencies}, devYaml)
   const config = {name: path.basename(root), plugins};
-  return new Workspace(root, env, project, config);
+  const appPath = isRails ? path.join(root, 'app/ui') : path.join(root, 'app');
+  const paths = {
+    ownRoot: path.resolve(__dirname, '..'),
+    ownNodeModules: path.resolve(__dirname, '../node_modules'),
+    root,
+    nodeModules: path.join(root, 'node_modules'),
+    app: appPath,
+    components: path.join(appPath, 'components'),
+    sections: path.join(appPath, 'sections'),
+  };
+  return new Workspace(root, env, project, paths, config);
 }
 
 const DEFAULT_VERSIONS = {
