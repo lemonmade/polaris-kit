@@ -8,8 +8,16 @@
       "stylelint-config-shopify"
     ]
   },
+  "eslintConfig": {
+    "extends": [
+      "plugin:shopify/react"
+    ]
+  },
   "dependencies": {
     "graphql": "^0.10.1",
     "graphql-tag": "^2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^2.3.4"
   }
 }

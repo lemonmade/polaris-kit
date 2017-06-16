@@ -1,6 +1,6 @@
 import {createWorkspace, createDependency} from 'tests/utilities';
-import Env from '../../../env';
-import webpackConfig from '../config';
+import Env from 'src/env';
+import webpackConfig from 'src/tools/webpack/config';
 
 const server = new Env({target: 'server'});
 const client = new Env({target: 'client'});

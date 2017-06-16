@@ -3,7 +3,7 @@ import {readJSON, readFile, pathExists} from 'fs-extra';
 import {safeLoad} from 'js-yaml';
 import get = require('lodash/get');
 
-interface PackageJSON {
+export interface PackageJSON {
   dependencies: {
     [key: string]: string,
   },
@@ -12,7 +12,7 @@ interface PackageJSON {
   },
 }
 
-interface DevYaml {
+export interface DevYaml {
 
 }
 

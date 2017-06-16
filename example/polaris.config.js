@@ -1,6 +1,6 @@
-import {Plugins} from '../src';
+/* eslint-env node */
 
-export default function createConfig(configure: Plugins) {
+module.exports = function createConfig(configure) {
   return {
     plugins: [
       configure.graphql({
@@ -8,4 +8,4 @@ export default function createConfig(configure: Plugins) {
       }),
     ],
   };
-}
+};

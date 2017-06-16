@@ -1,7 +1,7 @@
 export type Target = 'client' | 'server';
 export type Mode = 'production' | 'development' | 'test';
 
-interface Options {
+export interface Options {
   target?: Target,
   mode?: Mode,
 }

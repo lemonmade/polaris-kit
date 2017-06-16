@@ -2,8 +2,8 @@ import {join} from 'path';
 import {execSync} from 'child_process';
 import {mkdirp, writeFile} from 'fs-extra';
 
-import {Workspace} from '../../workspace';
 import Tasks from '../../tasks';
+import {Workspace} from '../../workspace';
 import buildGraphQL from '../graphql';
 import {graphQLSchemaPath, graphQLDirectoryGlobPattern} from '../utilities';
 

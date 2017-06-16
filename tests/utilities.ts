@@ -4,7 +4,7 @@ import {Workspace, Project} from '../src/workspace';
 import Env from '../src/env';
 import {Plugin} from '../src/types';
 
-interface Options {
+export interface Options {
   root: string,
   isRails: boolean,
   dependencies: {[key: string]: string},

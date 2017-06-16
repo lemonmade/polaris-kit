@@ -7,6 +7,8 @@ import loadWorkspace from '../../workspace';
 import {runGraphQLLint} from '../../tools/eslint';
 import runGraphQLFixtureLint from '../../tools/validate-graphql-fixtures';
 import runStylelint from '../../tools/stylelint';
+import runESLint from '../../tools/eslint';
+import runTSLint from '../../tools/tslint';
 
 export const command = 'lint';
 
@@ -23,12 +25,17 @@ export const builder: {[key: string]: Options} = {
     boolean: true,
     default: false,
   },
+  scripts: {
+    boolean: true,
+    default: true,
+  },
 };
 
 export interface Argv {
   graphql: boolean,
   graphqlFixtures: boolean,
   styles: boolean,
+  scripts: boolean,
 }
 
 export async function handler(argv: Argv) {
@@ -45,5 +52,13 @@ export async function handler(argv: Argv) {
 
   if (argv.styles) {
     await runStylelint(workspace, tasks);
+  }
+
+  if (argv.scripts) {
+    await runESLint(workspace, tasks);
+
+    if (workspace.project.usesTypeScript) {
+      await runTSLint(workspace, tasks);
+    }
   }
 }

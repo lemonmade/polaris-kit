@@ -10,7 +10,7 @@ export interface Config {
 }
 
 export default async function loadConfig(root: string, env: Env): Promise<Config> {
-  const userConfigurer = require(path.join(root, 'polaris.config.ts')).default;
+  const userConfigurer = require(path.join(root, 'polaris.config'));
   const config = await userConfigurer(plugins, env);
   return {
     name: path.basename(root),

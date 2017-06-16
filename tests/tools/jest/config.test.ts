@@ -1,10 +1,10 @@
 import * as path from 'path';
 import {createWorkspace, createDependency} from 'tests/utilities';
 
-import jestConfig from '../config';
-import * as plugins from '../../../plugins';
+import jestConfig from 'src/tools/jest/config';
+import * as plugins from 'src/plugins';
 
-const jestPath = path.resolve(__dirname, '../../../../jest');
+const jestPath = path.resolve(__dirname, '../../../jest');
 const jestTransformPath = path.join(jestPath, 'transformers');
 
 describe('jestConfig()', () => {

@@ -14,8 +14,8 @@ const TASK = Symbol('Jest');
 
 export default async function runJest(
   workspace: Workspace,
-  {watch = false}: Partial<Options>,
-  tasks: Tasks,
+  {watch = false}: Partial<Options> = {},
+  tasks = new Tasks(),
 ) {
   if (tasks.hasPerformed(TASK)) { return; }
   tasks.perform(TASK);
