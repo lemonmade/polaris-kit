@@ -1,4 +1,4 @@
-import {createWorkspace} from 'tests/utilities';
+import {createWorkspace, createDependency} from 'tests/utilities';
 import Env from '../../../env';
 import webpackConfig from '../config';
 
@@ -42,7 +42,7 @@ describe('webpack()', () => {
 
       it('includes .jsx when the project uses React', () => {
         const workspace = createWorkspace({
-          dependencies: {react: '15.0.0'},
+          dependencies: createDependency('react'),
         });
         expect(webpackConfig(workspace)).toHaveProperty('resolve.extensions', [
           '.js',
@@ -53,7 +53,7 @@ describe('webpack()', () => {
 
       it('includes .ts when the project uses TypeScript', () => {
         const workspace = createWorkspace({
-          devDependencies: {typescript: '2.0.0'},
+          devDependencies: createDependency('typescript'),
         });
         expect(webpackConfig(workspace)).toHaveProperty('resolve.extensions', [
           '.js',
@@ -64,8 +64,8 @@ describe('webpack()', () => {
 
       it('includes .ts and .tsx when the project uses TypeScript and React', () => {
         const workspace = createWorkspace({
-          dependencies: {react: '15.0.0'},
-          devDependencies: {typescript: '2.0.0'},
+          dependencies: createDependency('react'),
+          devDependencies: createDependency('typescript'),
         });
         expect(webpackConfig(workspace)).toHaveProperty('resolve.extensions', [
           '.js',
@@ -111,7 +111,7 @@ describe('webpack()', () => {
 
         it('does not include an alias for @shopify/polaris when it is not production', () => {
           const workspace = createWorkspace({
-            dependencies: {'@shopify/polaris': '1.0.0'},
+            dependencies: createDependency('@shopify/polaris'),
             env: new Env({mode: 'development'}),
           });
           expect(webpackConfig(workspace)).not.toHaveProperty('resolve.alias.@shopify/polaris');
@@ -119,7 +119,7 @@ describe('webpack()', () => {
 
         it('includes an alias for @shopify/polaris to the source folder in production', () => {
           const workspace = createWorkspace({
-            dependencies: {'@shopify/polaris': '1.0.0'},
+            dependencies: createDependency('@shopify/polaris'),
             env: new Env({mode: 'production'}),
           });
           expect(webpackConfig(workspace).resolve.alias['@shopify/polaris']).toMatch(/node_modules\/@shopify\/polaris\/src/);

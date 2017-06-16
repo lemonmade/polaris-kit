@@ -22,3 +22,17 @@ export function createWorkspace({
   const config = {name: path.basename(root), plugins};
   return new Workspace(root, env, project, config);
 }
+
+const DEFAULT_VERSIONS = {
+  react: '15.0.0',
+  typescript: '2.0.0',
+  '@shopify/polaris': '1.0.0',
+};
+
+export function createDependency(name: string) {
+  return {
+    [name]: DEFAULT_VERSIONS.hasOwnProperty(name)
+      ? DEFAULT_VERSIONS[name as keyof typeof DEFAULT_VERSIONS]
+      : '1.0.0',
+  };
+}

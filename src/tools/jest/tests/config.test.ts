@@ -1,5 +1,5 @@
 import * as path from 'path';
-import {createWorkspace} from 'tests/utilities';
+import {createWorkspace, createDependency} from 'tests/utilities';
 
 import jestConfig from '../config';
 import * as plugins from '../../../plugins';
@@ -67,7 +67,7 @@ describe('jestConfig()', () => {
 
     it('adds the custom SVG transform when using Polaris', async () => {
       expect(await jestConfig(createWorkspace({
-        dependencies: {'@shopify/polaris': '1.0.0'},
+        dependencies: createDependency('@shopify/polaris'),
       }))).toHaveProperty('transform', {
         '\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$': path.join(jestTransformPath, 'file.js'),
         '\\.svg$': path.join(jestTransformPath, 'svg.js'),
