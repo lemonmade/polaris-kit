@@ -1,8 +1,9 @@
-import {join} from 'path';
 import {mkdirp, writeFile} from 'fs-extra';
 import fetch = require('isomorphic-fetch');
 import {printSchema, buildClientSchema} from 'graphql';
+
 import {Workspace} from '../../workspace';
+import {graphQLSchemaPath} from '../utilities';
 
 export default async function buildGraphQL(workspace: Workspace) {
   if (!workspace.project.usesGraphQL) { return; }
@@ -22,11 +23,11 @@ export default async function buildGraphQL(workspace: Workspace) {
     // This JSON blob represents our entire schema. It is used by our
     // tools for linting GraphQL documents and fixtures, as well as for
     // generating the type definitions from GraphQL documents.
-    writeFile(join(buildDir, 'schema.json'), JSON.stringify(schema, null, 2)),
+    writeFile(graphQLSchemaPath(workspace), JSON.stringify(schema, null, 2)),
 
     // The .graphql file (referred to as a GraphQL IDL) is a human-readable
     // representation of the schema. It is used to provide autocompletion and
     // as a target for "go to definition" in GraphQL files.
-    writeFile(join(buildDir, 'schema.graphql'), printSchema(buildClientSchema(schema.data))),
+    writeFile(graphQLSchemaPath(workspace, true), printSchema(buildClientSchema(schema.data))),
   ]);
 }
