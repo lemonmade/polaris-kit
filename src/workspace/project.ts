@@ -11,6 +11,10 @@ interface PackageJSON {
 }
 
 export class Project {
+  get usesGraphQL() {
+    return this.hasDependency('graphql-tag');
+  }
+
   get usesTypeScript() {
     return this.hasDevDependency('typescript');
   }
