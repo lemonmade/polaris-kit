@@ -2,14 +2,37 @@ import {Workspace} from '../../workspace';
 import {ifElse, flatten, removeNullValues} from '../../utilities';
 
 import resolve from './resolve';
-import {sass} from './loaders';
+import {sass, images, javascript, typescript, fonts, graphql} from './rules';
+import {
+  report,
+  watch,
+  styles,
+  manifest,
+  input,
+  define,
+  output,
+  typescript as typescriptPlugin,
+} from './plugins';
 
 export interface Config {
   [key: string]: any,
 }
 
-export default function webpackConfig(workspace: Workspace): Config {
-  const {env} = workspace;
+export interface Options {
+  sourceMaps: boolean,
+  typeCheck: boolean,
+  report: boolean,
+}
+
+export default function webpackConfig(
+  workspace: Workspace,
+  {
+    sourceMaps = true,
+    typeCheck = true,
+    report: buildReport = false,
+  }: Partial<Options> = {}
+): Config {
+  const {env, paths} = workspace;
 
   const config = removeNullValues({
     cache: true,
@@ -21,12 +44,36 @@ export default function webpackConfig(workspace: Workspace): Config {
       __dirname: true,
       __filename: true,
     }),
+    devtool: ifElse(
+      env.isProduction,
+      ifElse(env.isServer, 'source-map', 'hidden-source-map'),
+      ifElse(sourceMaps, 'source-map', 'eval'),
+    ),
+    plugins: flatten([
+      input(),
+      define(workspace),
+      watch(workspace),
+      styles(workspace),
+      ifElse(typeCheck, typescriptPlugin(workspace)),
+      ifElse(buildReport, report()),
+      output(workspace),
+      manifest(workspace),
+    ]),
     module: {
-      loaders: flatten([
+      rules: flatten([
+        javascript(workspace),
+        typescript(workspace, {typeCheck}),
         sass(workspace),
+        images(workspace),
+        fonts(workspace),
+        graphql(workspace),
       ]),
     },
     resolve: resolve(workspace),
+    resolveLoader: [
+      paths.ownNodeModules,
+      paths.nodeModules,
+    ],
   });
 
   const webpackConfig = workspace.configFor('webpack');

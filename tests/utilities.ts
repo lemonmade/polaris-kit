@@ -32,6 +32,7 @@ export function createWorkspace({
     root,
     private: path.join(root, '.sewing-kit'),
     build: path.join(root, 'build'),
+    packages: path.join(root, 'packages'),
     nodeModules: path.join(root, 'node_modules'),
     app: appPath,
     components: path.join(appPath, 'components'),
@@ -46,10 +47,10 @@ const DEFAULT_VERSIONS = {
   '@shopify/polaris': '1.0.0',
 };
 
-export function createDependency(name: string) {
+export function createDependency(name: string, version = '1.0.0') {
   return {
     [name]: DEFAULT_VERSIONS.hasOwnProperty(name)
       ? DEFAULT_VERSIONS[name as keyof typeof DEFAULT_VERSIONS]
-      : '1.0.0',
+      : version,
   };
 }

@@ -6,6 +6,12 @@ export default function resolve(workspace: Workspace) {
   const {env, project, paths} = workspace;
 
   return removeNullValues({
+    // TODO: check if these need to actually exist before being included
+    modules: [
+      paths.packages,
+      'node_modules',
+      paths.app,
+    ],
     extensions: flatten([
       '.js',
       ifElse(project.usesReact, '.jsx'),

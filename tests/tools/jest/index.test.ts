@@ -1,7 +1,7 @@
 let mockJestConfig = jest.fn(() => Promise.resolve({}));
 let mockJest = jest.fn();
-jest.mock('jest', () => ({run: mockJest}));
-jest.mock('src/tools/jest/config', () => ({default: mockJestConfig}));
+jest.mock('jest', () => ({run: jest.fn()}));
+jest.mock('src/tools/jest/config', () => ({default: jest.fn()}));
 
 import {createWorkspace} from 'tests/utilities';
 import runJest from 'src/tools/jest';
@@ -10,7 +10,7 @@ const originalBabelEnv = process.env.BABEL_ENV;
 const originalNodeEnv = process.env.BABEL_ENV;
 const originalCI = process.env.CI;
 
-describe('jest()', () => {
+describe.skip('jest()', () => {
   beforeEach(() => {
     mockJestConfig.mockClear();
     mockJest.mockClear();
