@@ -1,3 +1,8 @@
+export interface CDNPlugin {
+  plugin: 'cdn',
+  url: string,
+}
+
 export interface JestPlugin {
   plugin: 'jest',
   setupRun?: string,
@@ -23,9 +28,10 @@ export interface WebpackPlugin {
   configure(config: object): object,
 }
 
-export type Plugin = GraphQLPlugin | JestPlugin | SassPlugin | TypeScriptPlugin | WebpackPlugin;
+export type Plugin = CDNPlugin | GraphQLPlugin | JestPlugin | SassPlugin | TypeScriptPlugin | WebpackPlugin;
 
 export interface PluginMap {
+  cdn: CDNPlugin,
   graphql: GraphQLPlugin,
   jest: JestPlugin,
   sass: SassPlugin,

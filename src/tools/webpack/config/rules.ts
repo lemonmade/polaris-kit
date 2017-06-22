@@ -1,9 +1,9 @@
 import {join} from 'path';
 import {svgOptions as svgOptimizationOptions} from '@shopify/images/optimize';
-import * as ExtractTextPlugin from 'extract-text-webpack-plugin';
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-import {Workspace} from '../../workspace';
-import {flatten, ifElse} from '../../utilities';
+import {Workspace} from '../../../workspace';
+import {flatten, ifElse} from '../../../utilities';
 
 export function sass(workspace: Workspace) {
   const {env, project, paths} = workspace;
@@ -194,7 +194,7 @@ export function images(workspace: Workspace) {
   ]);
 }
 
-export function fonts(workspace: Workspace) {
+export function fonts() {
   return {
     test: /\.woff2$/,
     loader: 'url-loader',
@@ -214,8 +214,8 @@ function babelOptionsForWorkspace(workspace: Workspace) {
 }
 
 function babelPresetForWorkspace(workspace: Workspace) {
-  const presets = [
-    [ifElse(workspace.env.isClient, 'shopify/web', 'shopify/node'), {modules: false}],
+  const presets: (string | [string, any])[] = [
+    [ifElse(workspace.env.isClient, 'shopify/web', 'shopify/node') as string, {modules: false}],
   ];
 
   if (!workspace.project.usesReact) { return presets; }

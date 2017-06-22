@@ -1,8 +1,19 @@
-import {Workspace} from '../../workspace';
-import {ifElse, flatten, removeNullValues} from '../../utilities';
+import {Workspace} from '../../../workspace';
+import {ifElse, flatten, removeNullValues} from '../../../utilities';
 
 import resolve from './resolve';
-import {sass, images, javascript, typescript, fonts, graphql} from './rules';
+import entry from './entry';
+import output from './output';
+
+import {
+  sass,
+  images,
+  javascript,
+  typescript,
+  fonts,
+  graphql,
+} from './rules';
+
 import {
   report,
   watch,
@@ -10,7 +21,7 @@ import {
   manifest,
   input,
   define,
-  output,
+  output as outputPlugin,
   typescript as typescriptPlugin,
 } from './plugins';
 
@@ -22,6 +33,7 @@ export interface Options {
   sourceMaps: boolean,
   typeCheck: boolean,
   report: boolean,
+  vscodeDebug: boolean,
 }
 
 export default function webpackConfig(
@@ -30,6 +42,7 @@ export default function webpackConfig(
     sourceMaps = true,
     typeCheck = true,
     report: buildReport = false,
+    vscodeDebug = false,
   }: Partial<Options> = {}
 ): Config {
   const {env, paths} = workspace;
@@ -44,6 +57,8 @@ export default function webpackConfig(
       __dirname: true,
       __filename: true,
     }),
+    entry: entry(workspace),
+    output: output(workspace, {vscodeDebug}),
     devtool: ifElse(
       env.isProduction,
       ifElse(env.isServer, 'source-map', 'hidden-source-map'),
@@ -56,7 +71,7 @@ export default function webpackConfig(
       styles(workspace),
       ifElse(typeCheck, typescriptPlugin(workspace)),
       ifElse(buildReport, report()),
-      output(workspace),
+      outputPlugin(workspace),
       manifest(workspace),
     ]),
     module: {
@@ -65,7 +80,7 @@ export default function webpackConfig(
         typescript(workspace, {typeCheck}),
         sass(workspace),
         images(workspace),
-        fonts(workspace),
+        fonts(),
         graphql(workspace),
       ]),
     },

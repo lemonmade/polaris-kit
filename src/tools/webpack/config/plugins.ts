@@ -1,13 +1,22 @@
+import * as path from 'path';
+import {cpus} from 'os';
+
 import * as webpack from 'webpack';
-import ExtractTextPlugin = require('extract-text-webpack-plugin');
-import BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-import WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-import HashOutputPlugin = require('webpack-plugin-hash-output');
-import CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer');
+const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+const HashOutputPlugin = require('webpack-plugin-hash-output');
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const Happypack = require('happypack');
+const AssetsPlugin = require('assets-webpack-plugin');
 import {CheckerPlugin} from 'awesome-typescript-loader';
 
-import {Workspace} from '../../workspace';
-import {ifElse, flatten} from '../../utilities';
+import {Workspace} from '../../../workspace';
+import {ifElse, flatten} from '../../../utilities';
+
+export interface Plugin {
+
+}
 
 export function report() {
   return new BundleAnalyzerPlugin({
@@ -26,13 +35,13 @@ const happypackThreadPool = Happypack.ThreadPool({
 const hashFunction = 'sha256'; // For subresource integrity checks.
 const hashDigestLength = 64;
 
-export function styles({env, paths, project}: Workspace) {
+export function styles({env, paths, project}: Workspace): Plugin[] {
   function createHappypackPlugin({id, loaders}: {id: string, loaders: any[]}) {
     return new Happypack({
       id,
       verbose: false,
       threadPool: happypackThreadPool,
-      tempDir: resolve(paths.build, 'cache/.happypack'),
+      // tempDir: path.join(paths.build, 'cache/.happypack'),
       loaders,
     });
   }
@@ -97,12 +106,12 @@ export function styles({env, paths, project}: Workspace) {
   ]);
 }
 
-export function typescript(workspace: Workspace) {
+export function typescript(workspace: Workspace): Plugin | null {
   if (!workspace.project.usesTypeScript) { return null; }
   return new CheckerPlugin();
 }
 
-export function watch({env, paths}: Workspace) {
+export function watch({env, paths}: Workspace): Plugin[] | null {
   if (!env.isDevelopment) { return null; }
 
   return [
@@ -111,7 +120,7 @@ export function watch({env, paths}: Workspace) {
   ];
 }
 
-export function manifest(workspace: Workspace) {
+export function manifest(workspace: Workspace): Plugin {
   // Generates a JSON file containing a map of all the output files for
   // our webpack bundle.  A necessisty for our server rendering process
   // as we need to interogate these files in order to know what JS/CSS
@@ -124,11 +133,11 @@ export function manifest(workspace: Workspace) {
       'assets.json',
     ),
     // TODO, get actual build dir
-    path: join(workspace.paths.build, workspace.env.target),
+    path: path.join(workspace.paths.build, workspace.env.target),
   });
 }
 
-export function output({env}: Workspace) {
+export function output({env}: Workspace): Plugin[] {
   return flatten([
     ifElse(env.isDevelopmentClient, new webpack.NamedModulesPlugin()),
     ifElse(env.isDevelopment, new webpack.NoEmitOnErrorsPlugin()),
@@ -148,11 +157,11 @@ export function output({env}: Workspace) {
   ]);
 }
 
-export function input() {
+export function input(): Plugin {
   return new CaseSensitivePathsPlugin();
 }
 
-export function define({env}: Workspace) {
+export function define({env}: Workspace): Plugin {
   return new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(env.mode),
   });

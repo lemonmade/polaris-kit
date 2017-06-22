@@ -4,17 +4,23 @@ import {
   WebpackPlugin,
   JestPlugin,
   GraphQLPlugin,
+  CDNPlugin,
 } from './types';
+
+export interface CDNPluginConfig {
+  url: string,
+}
+
+export function cdn({url}: CDNPluginConfig): CDNPlugin {
+  return {plugin: 'cdn', url};
+}
 
 export interface GraphQLPluginConfig {
   endpoint: GraphQLPlugin['endpoint'],
 }
 
 export function graphql({endpoint}: GraphQLPluginConfig): GraphQLPlugin {
-  return {
-    plugin: 'graphql',
-    endpoint,
-  };
+  return {plugin: 'graphql', endpoint};
 }
 
 export interface JestPluginConfig {

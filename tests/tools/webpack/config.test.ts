@@ -1,6 +1,7 @@
 import * as path from 'path';
 import {createWorkspace, createDependency} from 'tests/utilities';
 import Env from 'src/env';
+import * as plugins from 'src/plugins';
 import webpackConfig, {Config} from 'src/tools/webpack/config';
 
 interface Rule {
@@ -188,6 +189,111 @@ describe('webpack()', () => {
     it('has no externals when it is the client bundle', () => {
       const workspace = createWorkspace({env: client});
       expect(webpackConfig(workspace)).not.toHaveProperty('externals');
+    });
+
+    // TODO
+  });
+
+  describe('output', () => {
+    describe('path', () => {
+      it('puts the files in the build directory for development Rails', () => {
+        const workspace = createWorkspace({
+          isRails: true,
+          env: new Env({mode: 'development'}),
+        });
+        expect(webpackConfig(workspace)).toHaveProperty('output.path', workspace.paths.build);
+      });
+
+      it('puts the files in the public bundles directory for development Rails', () => {
+        const workspace = createWorkspace({
+          isRails: true,
+          env: new Env({mode: 'production'}),
+        });
+        expect(webpackConfig(workspace)).toHaveProperty('output.path', path.join(workspace.paths.root, 'public/bundles'));
+      });
+
+      it('puts the files a directory matching the target for Node apps', () => {
+        const clientWorkspace = createWorkspace({isRails: false, env: client});
+        expect(webpackConfig(clientWorkspace)).toHaveProperty('output.path', path.join(clientWorkspace.paths.build, 'client'));
+
+        const serverWorkspace = createWorkspace({isRails: false, env: server});
+        expect(webpackConfig(serverWorkspace)).toHaveProperty('output.path', path.join(clientWorkspace.paths.build, 'server'));
+      });
+    });
+
+    describe('filename', () => {
+      it('appends the hash for production clients', () => {
+        const workspace = createWorkspace({
+          env: new Env({target: 'client', mode: 'production'}),
+        });
+        expect(webpackConfig(workspace)).toHaveProperty('output.filename', '[name]-[chunkhash].js');
+      });
+
+      it('uses just the name for all other outputs', () => {
+        const devWorkspace = createWorkspace({
+          env: new Env({target: 'client', mode: 'development'}),
+        });
+        expect(webpackConfig(devWorkspace)).toHaveProperty('output.filename', '[name].js');
+
+        const serverWorkspace = createWorkspace({env: server});
+        expect(webpackConfig(serverWorkspace)).toHaveProperty('output.filename', '[name].js');
+      });
+    });
+
+    describe('chunkFilename', () => {
+      it('uses the name and chunkhash', () => {
+        const workspace = createWorkspace();
+        expect(webpackConfig(workspace)).toHaveProperty('output.chunkFilename', '[name]-[chunkhash].js');
+      });
+    });
+
+    // TODO: check if we can make this simplification
+    describe('publicPath', () => {
+      it('uses /assets/ when no CDN is provided', () => {
+        const workspace = createWorkspace({
+          plugins: [plugins.cdn({url: 'https://my.cdn.com'})],
+        });
+        expect(webpackConfig(workspace)).toHaveProperty('output.publicPath', 'https://my.cdn.com');
+      });
+
+      it('uses /assets/ when no CDN is provided', () => {
+        const workspace = createWorkspace();
+        expect(webpackConfig(workspace)).toHaveProperty('output.publicPath', '/assets/');
+      });
+    });
+
+    describe('libraryTarget', () => {
+      it('uses the commonJS target for the server', () => {
+        const workspace = createWorkspace({env: server});
+        expect(webpackConfig(workspace)).toHaveProperty('output.libraryTarget', 'commonjs2');
+      });
+
+      it('uses the var target for the client', () => {
+        const workspace = createWorkspace({env: client});
+        expect(webpackConfig(workspace)).toHaveProperty('output.libraryTarget', 'var');
+      });
+    });
+
+    describe('hash', () => {
+      it('uses the correct hashing strategy', () => {
+        const config = webpackConfig(createWorkspace());
+        expect(config).toHaveProperty('output.hashFunction', 'sha256');
+        expect(config).toHaveProperty('output.hashDigestLength', 64);
+      });
+    });
+
+    describe('devtool', () => {
+      it('does not set any custom devtool formatting by default', () => {
+        const config = webpackConfig(createWorkspace());
+        expect(config).not.toHaveProperty('output.devtoolModuleFilenameTemplate');
+        expect(config).not.toHaveProperty('output.devtoolFallbackModuleFilenameTemplate');
+      });
+
+      it('sets the devtool formatting for VSCode', () => {
+        const config = webpackConfig(createWorkspace(), {vscodeDebug: true});
+        expect(config).toHaveProperty('output.devtoolModuleFilenameTemplate', '[absolute-resource-path]');
+        expect(config).toHaveProperty('output.devtoolFallbackModuleFilenameTemplate', '[absolute-resource-path]?[hash]');
+      });
     });
   });
 

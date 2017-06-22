@@ -1,6 +1,6 @@
 import * as path from 'path';
-import {Workspace} from '../../workspace';
-import {ifElse, removeNullValues, flatten} from '../../utilities';
+import {Workspace} from '../../../workspace';
+import {ifElse, removeNullValues, flatten} from '../../../utilities';
 
 export default function resolve(workspace: Workspace) {
   const {env, project, paths} = workspace;
