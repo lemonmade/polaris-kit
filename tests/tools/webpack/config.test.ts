@@ -11,7 +11,7 @@ interface Rule {
 const server = new Env({target: 'server'});
 const client = new Env({target: 'client'});
 
-describe('webpack()', () => {
+describe('webpackConfig()', () => {
   describe('cache', () => {
     it('always sets cacheing to true', () => {
       expect(webpackConfig(createWorkspace({env: client}))).toHaveProperty('cache', true);
@@ -192,6 +192,123 @@ describe('webpack()', () => {
     });
 
     // TODO
+  });
+
+  describe('entry', () => {
+    it('uses the app path as the default entry point for Rails apps', () => {
+      const workspace = createWorkspace({isRails: true});
+      const {entry} = webpackConfig(workspace);
+      expect(entry[entry.length - 1]).toBe(workspace.paths.app);
+    });
+
+    it('uses the client path as the default path for client node apps', () => {
+      const workspace = createWorkspace({
+        isRails: false,
+        env: client,
+      });
+      const {entry} = webpackConfig(workspace);
+      expect(entry[entry.length - 1]).toBe(path.join(workspace.paths.root, 'client'));
+    });
+
+    it('uses the client path as the default path for client node apps', () => {
+      const workspace = createWorkspace({
+        isRails: false,
+        env: server,
+      });
+      const {entry} = webpackConfig(workspace);
+      expect(entry[entry.length - 1]).toBe(path.join(workspace.paths.root, 'server'));
+    });
+
+    it('uses a passed string entry from plugins', () => {
+      const workspace = createWorkspace({
+        plugins: [plugins.entry('my-file.js')],
+      });
+      const {entry} = webpackConfig(workspace);
+      expect(entry[entry.length - 1]).toBe('my-file.js');
+    });
+
+    it('uses a passed string array entry from plugins', () => {
+      const files = ['file-one.ts', 'file-two.ts'];
+      const workspace = createWorkspace({
+        plugins: [plugins.entry(files)],
+      });
+      const {entry} = webpackConfig(workspace);
+
+      expect(entry[entry.length - 2]).toBe(files[0]);
+      expect(entry[entry.length - 1]).toBe(files[1]);
+    });
+
+    it('uses a passed object array entry from plugins', () => {
+      const files = {
+        one: ['file-one.ts'],
+        two: ['file-two.ts', 'file-two-two.ts']
+      };
+      const workspace = createWorkspace({
+        plugins: [plugins.entry(files)],
+      });
+      const {entry} = webpackConfig(workspace);
+
+      expect(entry.one[entry.one.length - 1]).toBe(files.one[0]);
+      expect(entry.two[entry.two.length - 2]).toBe(files.two[0]);
+      expect(entry.two[entry.two.length - 1]).toBe(files.two[1]);
+    });
+
+    it('includes source-map-support for servers', () => {
+      const serverWorkspace = createWorkspace({env: server});
+      expect(webpackConfig(serverWorkspace).entry.includes('source-map-support/register')).toBe(true);
+
+      const clientWorkspace = createWorkspace({env: client});
+      expect(webpackConfig(clientWorkspace).entry.includes('source-map-support/register')).toBe(false);
+    });
+
+    it('includes regenerator-runtime for clients', () => {
+      const clientWorkspace = createWorkspace({env: client});
+      expect(webpackConfig(clientWorkspace).entry.includes('regenerator-runtime/runtime')).toBe(true);
+
+      const serverWorkspace = createWorkspace({env: server});
+      expect(webpackConfig(serverWorkspace).entry.includes('regenerator-runtime/runtime')).toBe(false);
+    });
+
+    it('does not include any Polaris files when it is not a dependency', () => {
+      const workspace = createWorkspace({env: client});
+      const {entry} = webpackConfig(workspace);
+      
+      if (Array.isArray(entry)) {
+        entry.forEach((file) => {
+          expect(file).not.toMatch(/@shopify\/polaris/);
+        });
+      } else {
+        expect(entry).not.toMatch(/@shopify\/polaris/);
+      }
+    });
+
+    it('includes the component Sass file for development clients', () => {
+      const devWorkspace = createWorkspace({
+        env: new Env({target: 'client', mode: 'development'}),
+        dependencies: createDependency('@shopify/polaris'),
+      });
+      expect(webpackConfig(devWorkspace).entry.includes('@shopify/polaris/styles/components.scss')).toBe(true);
+
+      const prodWorkspace = createWorkspace({
+        env: new Env({target: 'client', mode: 'production'}),
+        dependencies: createDependency('@shopify/polaris'),
+      });
+      expect(webpackConfig(prodWorkspace).entry.includes('@shopify/polaris/styles/components.scss')).toBe(false);
+    });
+
+    it('includes the global Sass file for all clients', () => {
+      const clientWorkspace = createWorkspace({
+        env: client,
+        dependencies: createDependency('@shopify/polaris'),
+      });
+      expect(webpackConfig(clientWorkspace).entry.includes('@shopify/polaris/styles/global.scss')).toBe(true);
+
+      const serverWorkspace = createWorkspace({
+        env: server,
+        dependencies: createDependency('@shopify/polaris'),
+      });
+      expect(webpackConfig(serverWorkspace).entry.includes('@shopify/polaris/styles/global.scss')).toBe(false);
+    });
   });
 
   describe('output', () => {

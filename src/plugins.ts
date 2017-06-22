@@ -5,6 +5,7 @@ import {
   JestPlugin,
   GraphQLPlugin,
   CDNPlugin,
+  EntryPlugin,
 } from './types';
 
 export interface CDNPluginConfig {
@@ -13,6 +14,10 @@ export interface CDNPluginConfig {
 
 export function cdn({url}: CDNPluginConfig): CDNPlugin {
   return {plugin: 'cdn', url};
+}
+
+export function entry(entries: EntryPlugin['entries']): EntryPlugin {
+  return {plugin: 'entry', entries};
 }
 
 export interface GraphQLPluginConfig {

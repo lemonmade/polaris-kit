@@ -3,6 +3,11 @@ export interface CDNPlugin {
   url: string,
 }
 
+export interface EntryPlugin {
+  plugin: 'entry',
+  entries: string | string[] | {[key: string]: string | string[]},
+}
+
 export interface JestPlugin {
   plugin: 'jest',
   setupRun?: string,
@@ -32,6 +37,7 @@ export type Plugin = CDNPlugin | GraphQLPlugin | JestPlugin | SassPlugin | TypeS
 
 export interface PluginMap {
   cdn: CDNPlugin,
+  entry: EntryPlugin,
   graphql: GraphQLPlugin,
   jest: JestPlugin,
   sass: SassPlugin,
