@@ -4,6 +4,7 @@ import {ifElse, flatten, removeNullValues} from '../../../utilities';
 import resolve from './resolve';
 import entry from './entry';
 import output from './output';
+import externals from './externals';
 
 import {
   sass,
@@ -59,6 +60,7 @@ export default function webpackConfig(
     }),
     entry: entry(workspace),
     output: output(workspace, {vscodeDebug}),
+    externals: externals(workspace),
     devtool: ifElse(
       env.isProduction,
       ifElse(env.isServer, 'source-map', 'hidden-source-map'),

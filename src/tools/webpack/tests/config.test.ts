@@ -415,6 +415,46 @@ describe('webpackConfig()', () => {
     });
   });
 
+  describe('externals', () => {
+    function isExternal(externals: (...args: any[]) => void, aModule: string) {
+      return new Promise((resolve) => {
+        // The externals function returned by webpack-node-externals takes a
+        // context parameter, a module name, and a callback. If the module is
+        // external, the callback is called with no error and a custom name. If
+        // it is not external, the callback is called with nothing.
+        return externals({}, aModule, (_error?: Error | null, name?: string) => {
+          resolve(typeof name === 'string');
+        });
+      });
+    }
+
+    it('has no externals on the client', () => {
+      const config = webpackConfig(createWorkspace({env: client}));
+      expect(config).not.toHaveProperty('externals');
+    });
+
+    it('has externals that includes everything but source-map-support for dev servers', async () => {
+      const config = webpackConfig(createWorkspace({
+        env: new Env({target: 'server', mode: 'development'}),
+      }));
+      expect(config).toHaveProperty('externals');
+      expect(await isExternal(config.externals, 'webpack')).toBe(true);
+      expect(await isExternal(config.externals, '@shopify/polaris')).toBe(true);
+      expect(await isExternal(config.externals, 'source-map-support/register')).toBe(false);
+    });
+
+    it('has externals that includes everything but source-map-support and Polaris for production servers', async () => {
+      const config = webpackConfig(createWorkspace({
+        env: new Env({target: 'server', mode: 'production'}),
+        dependencies: createDependency('@shopify/polaris'),
+      }));
+      expect(config).toHaveProperty('externals');
+      expect(await isExternal(config.externals, 'webpack')).toBe(true);
+      expect(await isExternal(config.externals, '@shopify/polaris')).toBe(false);
+      expect(await isExternal(config.externals, 'source-map-support/register')).toBe(false);
+    });
+  });
+
   describe('rules', () => {
     function findJavaScriptRule({module: {rules}}: Config) {
       return rules.find((rule: NewLoaderRule) => (

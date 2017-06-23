@@ -15,7 +15,9 @@ export interface Paths {
 }
 
 export default async function loadPaths(root: string, project: Project): Promise<Paths> {
-  const ownRoot = path.resolve(__dirname, '../..');
+  let ownRoot = path.resolve(__dirname, '../..');
+  if (path.basename(ownRoot) === 'lib') { ownRoot = path.resolve(ownRoot, '..'); }
+
   const appPath = project.isNode ? path.join(root, 'app') : path.join(root, 'app/ui');
 
   return {

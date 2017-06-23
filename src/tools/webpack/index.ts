@@ -27,7 +27,8 @@ export default function runWebpack(
   return new Promise((resolve, reject) => {
     compiler.run((err: Error, stats: webpack.Stats) => {
       if (err) {
-        throw err;
+        reject(err);
+        return;
       }
 
       const info = stats.toJson();
@@ -38,8 +39,17 @@ export default function runWebpack(
       }
 
       if (stats.hasWarnings()) {
-        console.warn(info.warnings);
+        for (const warning of info.warnings) {
+          runner.log.warn(warning);
+        }
       }
+
+      runner.log.info(`Build bundle:\n${stats.toString({
+        colors: true,
+        assets: true,
+        chunks: false,
+        timings: false,
+      })}`);
 
       resolve();
     });
