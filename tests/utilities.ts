@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import {Workspace, Project} from '../src/workspace';
+import {Workspace, Project, Config} from '../src/workspace';
 import Env from '../src/env';
 import {Plugin} from '../src/types';
 
@@ -24,7 +24,7 @@ export function createWorkspace({
   env = new Env({target: 'client', mode: 'development'}),
 }: Partial<Options> = {}) {
   const project = new Project(isRails, {dependencies, devDependencies}, devYaml)
-  const config = {name: path.basename(root), plugins};
+  const config = new Config(path.basename(root), plugins);
   const appPath = isRails ? path.join(root, 'app/ui') : path.join(root, 'app');
   const paths = {
     ownRoot: path.resolve(__dirname, '..'),

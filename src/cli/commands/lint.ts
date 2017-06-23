@@ -1,7 +1,7 @@
 import {Options} from 'yargs';
 
 import Env from '../../env';
-import Tasks from '../../tasks';
+import Runner from '../../runner';
 import loadWorkspace from '../../workspace';
 
 import {runGraphQLLint} from '../../tools/eslint';
@@ -39,26 +39,26 @@ export interface Argv {
 }
 
 export async function handler(argv: Argv) {
-  const tasks = new Tasks();
+  const runner = new Runner();
   const workspace = await loadWorkspace(new Env({mode: 'test'}));
 
   if (argv.graphql) {
-    await runGraphQLLint(workspace, tasks);
+    await runGraphQLLint(workspace, runner);
   }
 
   if (argv.graphqlFixtures) {
-    await runGraphQLFixtureLint(workspace, tasks);
+    await runGraphQLFixtureLint(workspace, runner);
   }
 
   if (argv.styles) {
-    await runStylelint(workspace, tasks);
+    await runStylelint(workspace, runner);
   }
 
   if (argv.scripts) {
-    await runESLint(workspace, tasks);
+    await runESLint(workspace, runner);
 
     if (workspace.project.usesTypeScript) {
-      await runTSLint(workspace, tasks);
+      await runTSLint(workspace, runner);
     }
   }
 }

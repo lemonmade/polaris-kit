@@ -2,19 +2,19 @@ import {execSync} from 'child_process';
 import {join} from 'path';
 import {pathExists, writeFile, mkdirp} from 'fs-extra';
 
-import Tasks from '../../tasks';
+import Runner from '../../runner';
 import {Workspace} from '../../workspace';
 import {flatten} from '../../utilities';
 
 const TASK = Symbol('TSLint');
 
-export default async function runTSLint(workspace: Workspace, tasks: Tasks) {
+export default async function runTSLint(workspace: Workspace, runner: Runner) {
   if (
     !workspace.project.usesTypeScript ||
-    tasks.hasPerformed(TASK)
+    runner.hasPerformed(TASK)
   ) { return; }
 
-  tasks.perform(TASK);
+  runner.perform(TASK);
 
   const executable = join(workspace.paths.ownNodeModules, '.bin/tslint');
   const projectTSLintFile = join(workspace.paths.root, 'tslint.json');

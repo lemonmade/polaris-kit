@@ -1,7 +1,12 @@
-import {Workspace} from './workspace';
+import {Workspace} from '../workspace';
+import Logger from './logger';
 
-export default class Tasks {
+export {Logger};
+
+export default class Runner {
   private performed = new Map<Symbol, true | Workspace[]>();
+
+  constructor(public log = new Logger()) {}
 
   hasPerformed(task: Symbol, workspace?: Workspace) {
     const valueForTask = this.performed.get(task);

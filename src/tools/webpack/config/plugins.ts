@@ -14,10 +14,6 @@ import {CheckerPlugin} from 'awesome-typescript-loader';
 import {Workspace} from '../../../workspace';
 import {ifElse, flatten} from '../../../utilities';
 
-export interface Plugin {
-
-}
-
 export function report() {
   return new BundleAnalyzerPlugin({
     analyzerMode: 'static',
@@ -35,13 +31,12 @@ const happypackThreadPool = Happypack.ThreadPool({
 const hashFunction = 'sha256'; // For subresource integrity checks.
 const hashDigestLength = 64;
 
-export function styles({env, paths, project}: Workspace): Plugin[] {
+export function styles({env, project}: Workspace): webpack.Plugin[] {
   function createHappypackPlugin({id, loaders}: {id: string, loaders: any[]}) {
     return new Happypack({
       id,
       verbose: false,
       threadPool: happypackThreadPool,
-      // tempDir: path.join(paths.build, 'cache/.happypack'),
       loaders,
     });
   }
@@ -106,12 +101,12 @@ export function styles({env, paths, project}: Workspace): Plugin[] {
   ]);
 }
 
-export function typescript(workspace: Workspace): Plugin | null {
+export function typescript(workspace: Workspace): webpack.Plugin | null {
   if (!workspace.project.usesTypeScript) { return null; }
   return new CheckerPlugin(); 
 }
 
-export function watch({env, paths}: Workspace): Plugin[] | null {
+export function watch({env, paths}: Workspace): webpack.Plugin[] | null {
   if (!env.isDevelopment) { return null; }
 
   return [
@@ -120,7 +115,7 @@ export function watch({env, paths}: Workspace): Plugin[] | null {
   ];
 }
 
-export function manifest(workspace: Workspace): Plugin {
+export function manifest(workspace: Workspace): webpack.Plugin {
   // Generates a JSON file containing a map of all the output files for
   // our webpack bundle.  A necessisty for our server rendering process
   // as we need to interogate these files in order to know what JS/CSS
@@ -137,7 +132,7 @@ export function manifest(workspace: Workspace): Plugin {
   });
 }
 
-export function output({env}: Workspace): Plugin[] {
+export function output({env}: Workspace): webpack.Plugin[] {
   return flatten([
     ifElse(env.isDevelopmentClient, new webpack.NamedModulesPlugin()),
     ifElse(env.isDevelopment, new webpack.NoEmitOnErrorsPlugin()),
@@ -157,11 +152,11 @@ export function output({env}: Workspace): Plugin[] {
   ]);
 }
 
-export function input(): Plugin {
+export function input(): webpack.Plugin {
   return new CaseSensitivePathsPlugin();
 }
 
-export function define({env}: Workspace): Plugin {
+export function define({env}: Workspace): webpack.Plugin {
   return new webpack.DefinePlugin({
     'process.env.NODE_ENV': JSON.stringify(env.mode),
   });

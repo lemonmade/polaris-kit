@@ -1,7 +1,7 @@
 import {Options as YargsOption} from 'yargs';
 
 import Env from '../../env';
-import Tasks from '../../tasks';
+import Runner from '../../runner';
 import loadWorkspace from '../../workspace';
 import runWebpack, {Options} from '../../tools/webpack';
 
@@ -31,16 +31,16 @@ export interface Argv extends Options {
 }
 
 export async function handler({mode, ...options}: Argv) {
-  const tasks = new Tasks();
+  const runner = new Runner();
   const workspace = await loadWorkspace(new Env({target: 'client', mode}));
   
   try {
-    await runWebpack(workspace, options, tasks);
+    await runWebpack(workspace, options, runner);
 
     // TODO: check if server exists
     if (workspace.project.isNode) {
       const serverWorkspace = workspace.duplicate(new Env({target: 'server', mode}))
-      await runWebpack(serverWorkspace, options, tasks);
+      await runWebpack(serverWorkspace, options, runner);
     }
   } catch (error) {
     console.error(error);

@@ -1,4 +1,3 @@
-import {PluginMap} from '../types';
 import Env from '../env';
 
 import loadConfig, {Config} from './config';
@@ -17,12 +16,8 @@ export class Workspace {
     public env: Env,
     public project: Project,
     public paths: Paths,
-    private config: Config,
+    public config: Config,
   ) {}
-
-  configFor<T extends keyof PluginMap>(plugin: T): PluginMap[T] | undefined {
-    return this.config.plugins.find(({plugin: aPlugin}) => aPlugin === plugin);
-  }
 
   duplicate(env: Env = this.env) {
     return new Workspace(

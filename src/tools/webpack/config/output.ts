@@ -10,15 +10,14 @@ export interface Options {
   vscodeDebug: boolean,
 }
 
-export default function output(workspace: Workspace, {vscodeDebug}: Options) {
-  const {project, env, paths} = workspace;
+export default function output({project, env, paths, config}: Workspace, {vscodeDebug}: Options) {
   const outPath = ifElse(
     project.isRails,
     ifElse(env.isDevelopment, paths.build, path.join(paths.root, 'public/bundles')),
     path.join(paths.build, env.target),
   );
 
-  const cdnPlugin = workspace.configFor('cdn');
+  const cdnPlugin = config.for('cdn');
 
   const vscodeOutput = vscodeDebug
     ? {

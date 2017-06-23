@@ -93,7 +93,7 @@ export default function webpackConfig(
     },
   });
 
-  const webpackConfig = workspace.configFor('webpack');
+  const webpackConfig = workspace.config.for('webpack');
   return webpackConfig
     ? webpackConfig.configure(config)
     : config;

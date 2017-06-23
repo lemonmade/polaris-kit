@@ -2,21 +2,21 @@ import {mkdirp, writeFile} from 'fs-extra';
 import fetch = require('isomorphic-fetch');
 import {printSchema, buildClientSchema} from 'graphql';
 
-import Tasks from '../../tasks';
+import Runner from '../../runner';
 import {Workspace} from '../../workspace';
 import {graphQLSchemaPath} from '../utilities';
 
 const TASK = Symbol('GraphQLBuild');
 
-export default async function buildGraphQL(workspace: Workspace, tasks: Tasks) {
+export default async function buildGraphQL(workspace: Workspace, runner: Runner) {
   if (
     !workspace.project.usesGraphQL ||
-    tasks.hasPerformed(TASK)
+    runner.hasPerformed(TASK)
   ) { return; }
 
-  tasks.perform(TASK);
+  runner.perform(TASK);
 
-  const graphQLPlugin = workspace.configFor('graphql');
+  const graphQLPlugin = workspace.config.for('graphql');
   if (graphQLPlugin == null) {
     // TODO: link to docs
     throw new Error('You must provide a GraphQL plugin in your Polaris config.');

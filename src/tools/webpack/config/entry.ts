@@ -2,9 +2,8 @@ import * as path from 'path';
 import {Workspace} from '../../../workspace';
 import {ifElse} from '../../../utilities';
 
-export default function entry(workspace: Workspace) {
-  const {env, project, paths} = workspace;
-  const entryConfig = workspace.configFor('entry');
+export default function entry({env, project, paths, config}: Workspace) {
+  const entryConfig = config.for('entry');
 
   let entries = entryConfig
     ? entryConfig.entries

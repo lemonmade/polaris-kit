@@ -14,7 +14,7 @@ export default async function jestConfig(workspace: Workspace): Promise<Config> 
     : '\\.(jpg|jpeg|png|gif|svg|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$';
   
   const transformsRoot = path.join(paths.ownRoot, 'jest', 'transformers');
-  const jestConfig = workspace.configFor('jest');
+  const jestConfig = workspace.config.for('jest');
   
   return {
     rootDir: root,

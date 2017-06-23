@@ -1,22 +1,22 @@
 import {join} from 'path';
 import {execSync} from 'child_process';
 
-import Tasks from '../../tasks';
+import Runner from '../../runner';
 import {Workspace} from '../../workspace';
 import runGraphQLTypeScriptDefinitions from '../graphql-typescript-definitions';
 
 const TASK = Symbol('TypeScript');
 
-export default async function runStylelint(workspace: Workspace, tasks: Tasks) {
+export default async function runStylelint(workspace: Workspace, runner: Runner) {
   if (
     !workspace.project.usesTypeScript ||
-    tasks.hasPerformed(TASK)
+    runner.hasPerformed(TASK)
   ) { return; }
 
-  tasks.perform(TASK);
+  runner.perform(TASK);
 
   if (workspace.project.usesGraphQL) {
-    await runGraphQLTypeScriptDefinitions(workspace, tasks);
+    await runGraphQLTypeScriptDefinitions(workspace, runner);
   }
 
   const executable = join(workspace.paths.nodeModules, '.bin/tsc');

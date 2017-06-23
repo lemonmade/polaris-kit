@@ -1,5 +1,5 @@
 import * as webpack from 'webpack';
-import Tasks from '../../tasks';
+import Runner from '../../runner';
 import {Workspace} from '../../workspace';
 import createConfig from './config';
 
@@ -16,10 +16,10 @@ export interface Options {
 export default function runWebpack(
   workspace: Workspace,
   options: Partial<Options> = {},
-  tasks = new Tasks(),
+  runner = new Runner(),
 ) {
-  if (tasks.hasPerformed(TASK, workspace)) { return; }
-  tasks.perform(TASK, workspace);
+  if (runner.hasPerformed(TASK, workspace)) { return; }
+  runner.perform(TASK, workspace);
 
   const config = createConfig(workspace, options);
   const compiler = webpack(config);
