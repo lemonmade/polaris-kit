@@ -23,6 +23,16 @@ export class Workspace {
   configFor<T extends keyof PluginMap>(plugin: T): PluginMap[T] | undefined {
     return this.config.plugins.find(({plugin: aPlugin}) => aPlugin === plugin);
   }
+
+  duplicate(env: Env = this.env) {
+    return new Workspace(
+      this.root,
+      env,
+      this.project,
+      this.paths,
+      this.config,
+    );
+  }
 }
 
 export default async function loadWorkspace(env = new Env({target: 'client', mode: 'development'})) {

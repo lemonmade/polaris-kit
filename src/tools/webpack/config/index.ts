@@ -85,10 +85,12 @@ export default function webpackConfig(
       ]),
     },
     resolve: resolve(workspace),
-    resolveLoader: [
-      paths.ownNodeModules,
-      paths.nodeModules,
-    ],
+    resolveLoader: {
+      modules: [
+        paths.ownNodeModules,
+        paths.nodeModules,
+      ],
+    },
   });
 
   const webpackConfig = workspace.configFor('webpack');

@@ -146,12 +146,14 @@ describe('webpackConfig()', () => {
   });
 
   describe('resolveLoader', () => {
-    it('includes own and project node_modules', () => {
-      const workspace = createWorkspace();
-      expect(webpackConfig(workspace)).toHaveProperty('resolveLoader', [
-        workspace.paths.ownNodeModules,
-        workspace.paths.nodeModules,
-      ]);
+    describe('modules', () => {
+      it('includes own and project node_modules', () => {
+        const workspace = createWorkspace();
+        expect(webpackConfig(workspace)).toHaveProperty('resolveLoader.modules', [
+          workspace.paths.ownNodeModules,
+          workspace.paths.nodeModules,
+        ]);
+      });
     });
   });
 

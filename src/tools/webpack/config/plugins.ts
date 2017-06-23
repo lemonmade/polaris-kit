@@ -108,7 +108,7 @@ export function styles({env, paths, project}: Workspace): Plugin[] {
 
 export function typescript(workspace: Workspace): Plugin | null {
   if (!workspace.project.usesTypeScript) { return null; }
-  return new CheckerPlugin();
+  return new CheckerPlugin(); 
 }
 
 export function watch({env, paths}: Workspace): Plugin[] | null {

@@ -70,7 +70,7 @@ input AppInstallInput {
 
 type AppInstallPayload {
   app: App
-  channel: Channel
+  channel: Channel @deprecated(reason: "Field not necessary since this mutation works with apps now")
   clientMutationId: String @deprecated(reason: "Relay is moving away from requiring this field")
 
   # List of errors that occurred executing the mutation.
@@ -83,6 +83,13 @@ type AppLink {
   text: String!
   title: String!
   url: URL!
+}
+
+type AppStoreUrlGeneratePayload {
+  appStoreUrl: URL!
+
+  # List of errors that occurred executing the mutation.
+  userErrors: [UserError!]!
 }
 
 input AppUninstallInput {
@@ -971,6 +978,7 @@ input CustomerInput {
   firstName: String
   lastName: String
   email: String
+  phone: String
   tags: [String!]
   acceptsMarketing: Boolean
   taxExempt: Boolean
@@ -1184,9 +1192,6 @@ input DraftOrderLineItemInput {
   # Ignored when variantId is provided
   title: String
 
-  # Deprecated - Use `originalUnitPrice` instead. Ignored when variantId is provided
-  price: Money
-
   # Ignored when variantId is provided
   originalUnitPrice: Money
 
@@ -1355,7 +1360,6 @@ interface HomeCard {
   dateRange: String
   dismissMessage: String!
   feedbackOptions: [String!]!
-  helpText: String @deprecated(reason: "Not supported anymore")
   id: ID!
   image(
     # Image width in pixels between 1 and 2048
@@ -1467,7 +1471,6 @@ type HomeContentCard implements HomeCard {
   dateRange: String
   dismissMessage: String!
   feedbackOptions: [String!]!
-  helpText: String @deprecated(reason: "Not supported anymore")
   id: ID!
   image(
     # Image width in pixels between 1 and 2048
@@ -1489,7 +1492,6 @@ type HomeCountdownCard implements HomeCard {
   dismissMessage: String!
   endDate: DateTime!
   feedbackOptions: [String!]!
-  helpText: String @deprecated(reason: "Not supported anymore")
   id: ID!
   image(
     # Image width in pixels between 1 and 2048
@@ -1511,7 +1513,6 @@ type HomeLineGraphCard implements HomeCard {
   dateRange: String
   dismissMessage: String!
   feedbackOptions: [String!]!
-  helpText: String @deprecated(reason: "Not supported anymore")
   id: ID!
   image(
     # Image width in pixels between 1 and 2048
@@ -1563,7 +1564,6 @@ type HomeQuestionCard implements HomeCard {
   dateRange: String
   dismissMessage: String!
   feedbackOptions: [String!]!
-  helpText: String @deprecated(reason: "Not supported anymore")
   id: ID!
   image(
     # Image width in pixels between 1 and 2048
@@ -1597,7 +1597,6 @@ type HomeSimpleCard implements HomeCard {
   dateRange: String
   dismissMessage: String!
   feedbackOptions: [String!]!
-  helpText: String @deprecated(reason: "Not supported anymore")
   id: ID!
   image(
     # Image width in pixels between 1 and 2048
@@ -1618,7 +1617,6 @@ type HomeTableCard implements HomeCard {
   dismissMessage: String!
   feedbackOptions: [String!]!
   headings: [String!]!
-  helpText: String @deprecated(reason: "Not supported anymore")
   id: ID!
   image(
     # Image width in pixels between 1 and 2048
@@ -1651,7 +1649,6 @@ type HomeVideoCard implements HomeCard {
   dateRange: String
   dismissMessage: String!
   feedbackOptions: [String!]!
-  helpText: String @deprecated(reason: "Not supported anymore")
   id: ID!
   image(
     # Image width in pixels between 1 and 2048
@@ -1856,6 +1853,7 @@ type MailingAddress implements Node {
   countryCode: String
   firstName: String
   formatted(withName: Boolean = false, withCompany: Boolean = true): [String!]!
+  formattedArea: String!
   id: ID!
   lastName: String
   latitude: Float
@@ -2010,6 +2008,7 @@ scalar Money
 type Mutation {
   adminPasswordlessLogin(input: AdminGenerateLoginTokenInput!): AdminGenerateLoginTokenPayload
   appInstall(input: AppInstallInput!): AppInstallPayload
+  appStoreUrlGenerate: AppStoreUrlGeneratePayload
   appUninstall(input: AppUninstallInput!): AppUninstallPayload
   collectionAddProducts(id: ID!, productIds: [ID!]!): CollectionAddProductsPayload
   collectionCreate(input: CollectionInput!): CollectionCreatePayload
@@ -2723,7 +2722,7 @@ type ProductVariant implements Node, HasMetafields {
     # Image size multiplier retina displays. Must be between 1 and 3
     scale: Int = 1
   ): [Image!]! @deprecated(reason: "Use the singular `image` field instead. There may never be more than one variant image.")
-  inventoryItem: InventoryItem! @deprecated(reason: "Not ready, use inventory_quantity")
+  inventoryItem: InventoryItem!
   inventoryManagement: ProductVariantInventoryManagement!
   inventoryPolicy: ProductVariantInventoryPolicy!
 
@@ -2785,7 +2784,7 @@ input ProductVariantInput {
   # Create only field. Use inventory_quantity_adjustment for updates.
   inventoryQuantity: Int
 
-  # Update only field. Add this amount to the inventory_quantity.
+  # Deprecated: Use the `inventoryAdjustQuantity` mutation instead
   inventoryQuantityAdjustment: Int
   options: [String!]
   position: Int
@@ -3035,7 +3034,7 @@ type Shop implements Node {
   appLinks(type: ResourceType, location: ResourceLocation): [AppLink!]!
 
   # An app store URL to auto-authenticate the shop
-  appStoreUrl: URL!
+  appStoreUrl: URL! @deprecated(reason: "Use AppStoreUrlGenerate mutation instead")
   availableChannelApps(first: Int!, after: String, reverse: Boolean = false): AppConnection!
   billingAddress: MailingAddress!
   channelByHandle(handle: String!): Channel
@@ -3057,6 +3056,7 @@ type Shop implements Node {
   ): CollectionConnection!
   currency: String! @deprecated(reason: "Use `currencyCode` instead")
   currencyCode: CurrencyCode!
+  customerAccounts: ShopCustomerAccountsSetting!
   customerSavedSearches(first: Int!, after: String, reverse: Boolean = false): SavedSearchConnection!
   customerTags(first: Int!): StringConnection!
   customers(
@@ -3211,6 +3211,12 @@ type Shop implements Node {
   # The setting for whether applicable taxes are included in product prices.
   taxesIncluded: Boolean!
   weightUnit: WeightUnit!
+}
+
+enum ShopCustomerAccountsSetting {
+  REQUIRED
+  OPTIONAL
+  DISABLED
 }
 
 type ShopFeatures {
