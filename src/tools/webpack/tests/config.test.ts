@@ -1,12 +1,11 @@
 import * as path from 'path';
-import {createWorkspace, createDependency} from 'tests/utilities';
-import Env from 'src/env';
-import * as plugins from 'src/plugins';
-import webpackConfig, {Config} from 'src/tools/webpack/config';
+import {NewLoaderRule, NewLoader, NewUseRule} from 'webpack';
 
-interface Rule {
-  [key: string]: any,
-}
+import {createWorkspace, createDependency} from 'tests/utilities';
+
+import Env from '../../../env';
+import * as plugins from '../../../plugins';
+import webpackConfig, {Config} from '../config';
 
 const server = new Env({target: 'server'});
 const client = new Env({target: 'client'});
@@ -418,8 +417,9 @@ describe('webpackConfig()', () => {
 
   describe('rules', () => {
     function findJavaScriptRule({module: {rules}}: Config) {
-      return rules.find((rule: Rule) => (
+      return rules.find((rule: NewLoaderRule) => (
         rule.test != null &&
+        rule.test instanceof RegExp &&
         rule.test.source === /\.js$/.source &&
         rule.loader === 'babel-loader'
       ));
@@ -491,8 +491,9 @@ describe('webpackConfig()', () => {
 
     describe('typescript', () => {
       function findTypeScriptRule({module: {rules}}: Config) {
-        return rules.find((rule: Rule) => (
+        return rules.find((rule: NewLoaderRule) => (
           rule.test != null &&
+          rule.test instanceof RegExp &&
           rule.test.source === /\.tsx?$/.source &&
           rule.loader === 'awesome-typescript-loader'
         ));
@@ -591,17 +592,18 @@ describe('webpackConfig()', () => {
       }
 
       function findImageLoader({module: {rules}}: Config) {
-        return rules.find((rule: Rule) => {
+        return rules.find((rule: NewUseRule) => {
           return (
             Array.isArray(rule.use) &&
-            rule.use[0].loader === 'url-loader'
+            (rule.use[0] as NewLoader).loader === 'url-loader'
           );
         });
       }
 
-      function optimizesSVG(rule: Rule) {
+      function optimizesSVG(rule: NewLoaderRule) {
         return (
           rule.loader === 'image-webpack-loader' &&
+          rule.options != null &&
           rule.options.svgo != null
         );
       }
@@ -672,8 +674,9 @@ describe('webpackConfig()', () => {
 
     describe('fonts', () => {
       function findFontRule({module: {rules}}: Config) {
-        return rules.find((rule: Rule) => (
+        return rules.find((rule: NewLoaderRule) => (
           rule.test != null &&
+          rule.test instanceof RegExp &&
           rule.test.source === /\.woff2$/.source &&
           rule.loader === 'url-loader'
         ));
@@ -688,8 +691,9 @@ describe('webpackConfig()', () => {
 
     describe('graphql', () => {
       function findGraphQLRule({module: {rules}}: Config) {
-        return rules.find((rule: Rule) => (
+        return rules.find((rule: NewLoaderRule) => (
           rule.test != null &&
+          rule.test instanceof RegExp &&
           rule.test.source === /\.graphql$/.source &&
           rule.loader === 'graphql-tag/loader'
         ));

@@ -33,7 +33,7 @@ export interface WebpackPlugin {
   configure(config: object): object,
 }
 
-export type Plugin = CDNPlugin | GraphQLPlugin | JestPlugin | SassPlugin | TypeScriptPlugin | WebpackPlugin;
+export type Plugin = EntryPlugin | CDNPlugin | GraphQLPlugin | JestPlugin | SassPlugin | TypeScriptPlugin | WebpackPlugin;
 
 export interface PluginMap {
   cdn: CDNPlugin,

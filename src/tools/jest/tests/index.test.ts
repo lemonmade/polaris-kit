@@ -4,7 +4,7 @@ jest.mock('jest', () => ({run: jest.fn()}));
 jest.mock('src/tools/jest/config', () => ({default: jest.fn()}));
 
 import {createWorkspace} from 'tests/utilities';
-import runJest from 'src/tools/jest';
+import runJest from '..';
 
 const originalBabelEnv = process.env.BABEL_ENV;
 const originalNodeEnv = process.env.BABEL_ENV;

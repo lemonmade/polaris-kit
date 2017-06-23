@@ -8,7 +8,7 @@
     "test:watch": "yarn run test -- --watch",
     "build": "tsc",
     "build:watch": "yarn run build -- --watch",
-    "ts": "tsc --noEmit && cd tests && tsc --noEmit"
+    "ts": "tsc --noEmit"
   },
   "jest": {
     "testRegex": ".*\\.test\\.ts$",
